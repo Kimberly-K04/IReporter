@@ -94,7 +94,7 @@ sudo -u postgres psql -c "CREATE DATABASE ipsc_db;"
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
 ```
 
-### Enviroment variables setup(Backend)
+### Environment variables setup(Backend)
 
 - **Create a .env in the root of the project with the following:**
 
@@ -115,6 +115,36 @@ below (simplest)**
 
 ```bash
 SHOW port;
+```
+
+**5. Run Database Migrations**
+
+- Migrations are already set up ``migrations/`` folder. Run the following to create all tables:
+
+```bash
+flask db upgrade
+```
+
+## Start Application
+
+- We use Honcho to run both the flask Api  and the Vite dev server concurrently from the project root:
+
+```bash
+honcho start -f Procfile
+```
+
+- You can also run each service manually on diffrent terimals: 
+
+***Flask service**
+
+```bash
+flask run
+```
+
+***Vite service**
+
+```bash
+cd client; npm run dev
 ```
 
 
