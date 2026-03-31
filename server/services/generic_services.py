@@ -49,7 +49,7 @@ class SingleResource(Resource):
         
         
     def get(self,id):
-        item=self.Model.query.filter_by(id=id).first()
+        item = db.session.get(self.Model, id)
         
         if not item: 
             abort(404,message=f'{self.resource} not found.')
@@ -57,7 +57,7 @@ class SingleResource(Resource):
         return make_response({'data':item.to_dict()},200)
     
     def patch(self,id):
-        item=self.Model.query.filter_by(id=id).first()
+        item = db.session.get(self.Model, id)
         
         if not item:
             abort(404,message=f'{self.resource} not found')
@@ -74,7 +74,7 @@ class SingleResource(Resource):
             return {'error':[str(e)]}
     
     def delete(self,id):
-        item=self.Model.query.filter_by(id=id).first()
+        item = db.session.get(self.Model, id)
         
         if not item:
             abort(404,message=f'{self.resource} not found')
