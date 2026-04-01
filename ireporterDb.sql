@@ -3,6 +3,7 @@ CREATE TABLE "user" (
   "username" text UNIQUE NOT NULL,
   "email" text UNIQUE NOT NULL,
   "password" text NOT NULL,
+  "is_admin" boolean DEFAULT false,
   "created_at" datatime,
   "update_at" datatime
 );
