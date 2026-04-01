@@ -102,6 +102,21 @@ class TestRoutes:
         assert items['email'] == user.email
         assert updated_user.username == new_username
     
+    def test_delete_user(self,client):
+        user = User(
+            username='Jack Black',
+            email='jackblack@gmail.com',
+            password_hash='jackblack123',
+        )
+        db.session.add(user)
+        db.session.commit()
+        
+        response=client.delete(f'/api/v1/users/{user.id}')
+        
+        assert response.status_code == 204
+        assert response.content_type == 'application/json'
+        
+    
     def test_get_records(self, client):
         
         user = User(
@@ -216,3 +231,28 @@ class TestRoutes:
         assert items['description'] == updated_record.description
         assert items['type'] == updated_record.type
         assert 'updated' in updated_record.title
+    
+    def test_delete_records(self,client):
+        user = User(
+            username='Jack Black',
+            email='jackblack@gmail.com',
+            password_hash='jackblack123',
+        )
+        db.session.add(user)
+        db.session.commit()
+        
+        record = Record(
+            user_id=user.id,
+            type='red flag',
+            title='KEMSA corruption case',
+            description='any description here will work',
+            status='pending'
+        )
+        
+        db.session.add(record)
+        db.session.commit()
+        
+        response=client.delete(f'/api/v1/records/{record.id}')
+        
+        assert response.status_code==204
+        assert response.content_type=='application/json'
