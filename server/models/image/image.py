@@ -2,9 +2,11 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from ...config import db 
 
-class Image(db.model, SerializerMixin):
+class Image(db.Model, SerializerMixin):
     
     __tablenamename__ = "images" 
+
+    serialize_rules = ('-record.images')
 
     id = db.Column(db.Integer, primary_key=True)
     record_id = db.Column(db.Integer, db.ForeignKey("recors.id"), nullable= False)
