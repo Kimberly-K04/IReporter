@@ -11,4 +11,4 @@ class Image(db.model, SerializerMixin):
     image_url = db.Column(db.Text, nullable = False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-    
+    record = db.relationship('Record', backref=db.backref('images', lazy=True))
