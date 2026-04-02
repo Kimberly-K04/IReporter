@@ -3,7 +3,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 
 class Record(db.Model, SerializerMixin):
-    __tablename__='reports'
+    __tablename__='records'
     
     serialize_rules=('-images.record', '-videos.record',)
     
@@ -18,8 +18,8 @@ class Record(db.Model, SerializerMixin):
     created_at=db.Column(db.DateTime, server_default=db.func.now())
     updated_at=db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
     
-    # images=db.relationship('Image', backref='record', cascade='all, delete-orphan')
-    # videos=db.relationship('Video', backref='record', cascade='all, delete-orphan')
+    images=db.relationship('Image', backref='record', cascade='all, delete-orphan')
+    videos=db.relationship('Video', backref='record', cascade='all, delete-orphan')
     
     @validates('type')
     def validate_type(self,key,type):
