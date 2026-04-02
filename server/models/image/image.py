@@ -13,4 +13,10 @@ class Image(db.Model, SerializerMixin):
     image_url = db.Column(db.Text, nullable = False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-    record = db.relationship('Record', backref=db.backref('images', lazy=True))
+    record = db.relationship('Record', backref=db.backref('images', lazy=True)) 
+
+    @validates('image_url')
+    def validate_image_url(self, key, value):
+        if not value:
+            raise ValueError('Image URL must be provided')
+        return value
