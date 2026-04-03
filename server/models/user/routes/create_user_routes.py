@@ -1,0 +1,20 @@
+from ....routes.create_blueprint import api_v1
+from .user_routes import *
+
+api_v1.add_resource(
+    LoginResource,
+    '/auth/login',
+    endpoint='/auth/login'
+)
+
+api_v1.add_resource(
+    LogoutResource,
+    '/auth/logout',
+    endpoint='/auth/logout'
+)
+
+api_v1.add_resource(
+    SignupResource,
+    '/auth/signup',
+    endpoint='/auth/signup'
+)

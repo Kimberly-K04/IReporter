@@ -1,0 +1,64 @@
+from flask import request,g, make_response
+from flask_restful import Resource
+from ....utils.auth import login_required, admin_required, can_edit_record
+from ... import Record
+from ....config import db
+from werkzeug.exceptions import Forbidden
+
+class RecordResource(Resource):
+    @login_required
+    def patch(self,id):
+        record=db.session.get(Record,id)
+        if not record:
+            return {'error':'Record not found!'},404
+        if not can_edit_record(record,g.current_user):
+            return {'error':'Not allowed to edit this record'},403
+        
+        for field,value in request.json.items():
+            if hasattr(record,field):
+                if field =='status':
+                    raise Forbidden('Admin privileges required')
+                setattr(record,field,value)
+        
+        try:
+            db.session.commit()
+            return make_response({'data':record.to_dict()},200)
+        except Exception as e:
+            db.session.rollback()
+            return {'error':[str(e)]}
+    
+    @login_required
+    def delete(self,id):
+        record=db.session.get(Record,id)
+        if not record:
+            return {'error':'Record not found!'},404
+        if not can_edit_record(record,g.current_user):
+            return {'error':'Not allowed to edit this record'},403
+        
+        db.session.delete(record)
+        db.session.commit()
+        
+        return make_response({},204)
+
+class AdminRecordResource(Resource):
+    @admin_required 
+    def patch(self, id):
+        record = db.session.get(Record, id)
+        if not record:
+            return {'error': 'Record not found!'}, 404
+        
+        data = request.get_json()
+        if 'status' not in data:
+            return {'error': 'Only status field can be updated'}, 400
+        new_status = data['status']
+
+        try:
+            setattr(record, 'status', new_status)
+            db.session.commit()
+            return make_response({'data': record.to_dict()}, 200)
+        except ValueError as e:
+            
+            return {'error': str(e)}, 400
+        except Exception as e:
+            db.session.rollback()
+            return {'error': [str(e)]}, 400
