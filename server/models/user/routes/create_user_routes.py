@@ -3,18 +3,18 @@ from .user_routes import *
 
 api_v1.add_resource(
     LoginResource,
-    '/login',
-    endpoint='/login'
+    '/auth/login',
+    endpoint='/auth/login'
 )
 
 api_v1.add_resource(
     LogoutResource,
-    '/logout',
-    endpoint='/logout'
+    '/auth/logout',
+    endpoint='/auth/logout'
 )
 
 api_v1.add_resource(
     SignupResource,
-    '/signup',
-    endpoint='/signup'
+    '/auth/signup',
+    endpoint='/auth/signup'
 )

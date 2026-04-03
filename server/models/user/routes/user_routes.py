@@ -9,11 +9,19 @@ from ....config import db
 class SignupResource(Resource):
     def post(self):
         data = request.get_json()
+        
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
-        if User.query.filter((User.email == email) | (User.username == username)).first():
-            return {'error': 'User already exists'}, 400
+        
+        if not username or not email or not password:
+            return {'error': 'Username, email, and password are required'}, 400
+        
+        if User.query.filter_by(username=username).first():
+            return {'error': 'Username already exists'}, 400
+        if User.query.filter_by(email=email).first():
+            return {'error': 'Email already exists'}, 400
+        
         user = User(
             username=username,
             email=email,
@@ -21,6 +29,7 @@ class SignupResource(Resource):
         )
         db.session.add(user)
         db.session.commit()
+        
         token = create_token(user.id)
         return {'token': token, 'user': user.to_dict()}, 201
 
