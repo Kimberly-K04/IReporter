@@ -1,10 +1,15 @@
-from ....routes.create_blueprint import api_v1
-from .image_routes import *
+from server.routes.create_blueprint import api_v1
+from .image_routes import ImageResource, ImageByID
+
 
 
 api_v1.add_resource(
     ImageResource,
-    '/records/me/<int:id>',
-    endpoint='/images/<int:id>',
+    '/images'
 )
 
+
+api_v1.add_resource(
+    ImageByID,
+    '/videos/<int:id>'
+)
