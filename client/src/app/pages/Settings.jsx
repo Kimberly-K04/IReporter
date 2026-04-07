@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Mail, Save, Sun, Moon } from 'lucide-react';
 
 export default function Settings() {
@@ -6,15 +6,16 @@ export default function Settings() {
     JSON.parse(localStorage.getItem("user") || '{"username":"User","email":"user@mail.com"}')
   );
   const [dark, setDark] = useState(
-    document.documentElement.classList.contains('dark')
-  );
+  document.documentElement.classList.contains('dark')
+);
 
-  const toggleTheme = () => {
-    const newDark = !dark;
-    setDark(newDark);
-    document.documentElement.classList.toggle('dark', newDark);
-    localStorage.setItem('theme', newDark ? 'dark' : 'light');
+useEffect(() => {
+  const handler = () => {
+    setDark(document.documentElement.classList.contains('dark'));
   };
+  window.addEventListener('themechange', handler);
+  return () => window.removeEventListener('themechange', handler);
+}, []);
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">

@@ -95,7 +95,7 @@ export default function ReportSubmission() {
           )}
           <button
             onClick={handleSubmit}
-            className="w-full py-5 bg-blue-600 text-slate-900 dark:text-white font-black rounded-2xl hover:bg-blue-700 shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all"
+            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all"
           >
             <Send size={20}/> SUBMIT TO AUTHORITIES
           </button>

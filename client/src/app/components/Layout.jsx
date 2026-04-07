@@ -18,11 +18,12 @@ export default function Layout() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const toggleTheme = () => {
-    const newDark = !dark;
-    setDark(newDark);
-    document.documentElement.classList.toggle("dark", newDark);
-    localStorage.setItem("theme", newDark ? "dark" : "light");
-  };
+  const newDark = !dark;
+  setDark(newDark);
+  document.documentElement.classList.toggle("dark", newDark);
+  localStorage.setItem("theme", newDark ? "dark" : "light");
+  window.dispatchEvent(new Event("themechange")); 
+};
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 p-3 rounded-xl transition-all ${
