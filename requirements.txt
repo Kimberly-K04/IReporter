@@ -42,8 +42,10 @@ pydantic_core==2.41.5
 Pygments==2.19.2
 PyJWT==2.12.1
 pytest==8.4.2
+python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
 pytz==2026.1.post1
+sib-api-v3-sdk==7.6.0
 six==1.17.0
 SQLAlchemy==2.0.48
 SQLAlchemy-serializer==1.4.12
@@ -51,5 +53,6 @@ tomli==2.4.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2025.3
+urllib3==2.6.3
 Werkzeug==3.1.7
 zipp==3.23.0
