@@ -67,6 +67,7 @@ class AdminRecordResource(Resource):
             except Exception as e:
                 # Log the error but don't break the response
                 print(f"Email failed: {e}")
+            
             return make_response({'data': record.to_dict()}, 200)
         except ValueError as e:
             
