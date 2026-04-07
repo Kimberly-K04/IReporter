@@ -24,6 +24,8 @@ export default function SignUp() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  const api = import.meta.env.VITE_API
   const handleSignUp = async (e) => {
     e.preventDefault();
     setServerError("");
@@ -32,7 +34,7 @@ export default function SignUp() {
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/register", {
+      const res = await fetch(`${api}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

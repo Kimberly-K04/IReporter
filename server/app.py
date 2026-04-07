@@ -11,8 +11,13 @@ def create_app(test_config=None):
     if test_config:
         app.config.update(test_config)
     config_app(app)
+    CORS(app, origins=[
+            "http://localhost:5173", #dev
+            "https://i-reporter-inky.vercel.app" #prod 
+        ],
+        supports_credentials=True
+        )
+    
     app.register_blueprint(api_pb)
-    # CORS(app, origins=["http://localhost:5173/"])
-    # CORS(app, origins=["https://IReporter-xi.vercel.app/"])
     
     return app 
