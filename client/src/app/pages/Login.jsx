@@ -18,6 +18,8 @@ export default function Login() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  const api = import.meta.env.VITE_API
   const handleLogin = async (e) => {
     e.preventDefault();
     setServerError("");
@@ -26,7 +28,7 @@ export default function Login() {
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/login", {
+      const res = await fetch(`${api}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
