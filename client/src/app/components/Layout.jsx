@@ -27,25 +27,25 @@ export default function Layout() {
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 p-3 rounded-xl transition-all ${
       isActive
-        ? "bg-blue-600 text-white shadow-lg"
-        : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+        ? "bg-blue-600 text-slate-900 dark:text-white shadow-lg"
+        : "text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white dark:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white"
     }`;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-200">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-900 dark:text-white transition-colors duration-200">
 
       {/* SIDEBAR */}
       <aside className={`hidden md:flex flex-col p-4 border-r transition-all duration-200 ${
         collapsed ? "w-20" : "w-64"
-      } bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800`}>
+      } bg-white dark:bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800`}>
 
         {/* LOGO */}
         <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="bg-blue-600 p-2 rounded-lg font-black text-white flex-shrink-0">
+          <div className="bg-blue-600 p-2 rounded-lg font-black text-slate-900 dark:text-white flex-shrink-0">
             iR
           </div>
           {!collapsed && (
-            <h1 className="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">
+            <h1 className="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-900 dark:text-white">
               iReporter
             </h1>
           )}
@@ -77,7 +77,7 @@ export default function Layout() {
         <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-1">
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-3 p-3 rounded-xl w-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all"
+            className="flex items-center gap-3 p-3 rounded-xl w-full text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white dark:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white transition-all"
           >
             {dark ? <Sun size={20} className="flex-shrink-0" /> : <Moon size={20} className="flex-shrink-0" />}
             {!collapsed && (dark ? "Light Mode" : "Dark Mode")}
@@ -102,15 +102,15 @@ export default function Layout() {
       <main className="flex-1 flex flex-col overflow-hidden">
 
         {/* HEADER */}
-        <header className="h-16 flex items-center justify-between px-6 border-b bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800">
+        <header className="h-16 flex items-center justify-between px-6 border-b bg-white/80 dark:bg-slate-100 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800">
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden md:block text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+            className="hidden md:block text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-900 dark:text-white transition-colors"
           >
             <ChevronLeft className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`} />
           </button>
           <div className="md:hidden font-black text-blue-600 text-xl">iR</div>
-          <div className="text-[10px] uppercase tracking-widest text-slate-400">Secure Portal</div>
+          <div className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Secure Portal</div>
         </header>
 
         {/* PAGE CONTENT */}
@@ -119,17 +119,17 @@ export default function Layout() {
         </section>
 
         {/* MOBILE NAV */}
-        <nav className="md:hidden fixed bottom-0 w-full h-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center">
-          <NavLink to="/home" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-400"}>
+        <nav className="md:hidden fixed bottom-0 w-full h-16 bg-white dark:bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center">
+          <NavLink to="/home" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-500 dark:text-slate-400"}>
             <Map size={22} />
           </NavLink>
-          <NavLink to="/home/report" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-400"}>
+          <NavLink to="/home/report" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-500 dark:text-slate-400"}>
             <PlusCircle size={22} />
           </NavLink>
-          <NavLink to="/home/activity" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-400"}>
+          <NavLink to="/home/activity" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-500 dark:text-slate-400"}>
             <List size={22} />
           </NavLink>
-          <NavLink to="/home/settings" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-400"}>
+          <NavLink to="/home/settings" className={({ isActive }) => isActive ? "text-blue-600" : "text-slate-500 dark:text-slate-400"}>
             <Settings size={22} />
           </NavLink>
         </nav>

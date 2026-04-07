@@ -24,7 +24,7 @@ export default function IncidentDetail() {
   const image = images.images.find(i => i.record_id === record?.id);
 
   if (!record) return (
-    <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">
+    <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-500 dark:text-slate-400">
       Incident not found.
     </div>
   );
@@ -38,11 +38,11 @@ export default function IncidentDetail() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all"
+          className="p-2 rounded-xl bg-white dark:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-900 dark:text-white transition-all"
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">Incident Details</h1>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-slate-900 dark:text-white">Incident Details</h1>
       </div>
 
       {/* HERO IMAGE */}
@@ -50,7 +50,7 @@ export default function IncidentDetail() {
         <div className="relative rounded-3xl overflow-hidden h-64">
           <img src={image.image_url} alt={record.title} className="w-full h-full object-cover" />
           <span className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-xs font-black uppercase ${
-            record.type === 'red-flag' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'
+            record.type === 'red-flag' ? 'bg-red-500 text-slate-900 dark:text-white' : 'bg-blue-500 text-slate-900 dark:text-white'
           }`}>
             {record.type}
           </span>
@@ -59,8 +59,8 @@ export default function IncidentDetail() {
 
       {/* TITLE + META */}
       <div className="space-y-2">
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white">{record.title}</h2>
-        <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 text-sm">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-900 dark:text-white">{record.title}</h2>
+        <div className="flex items-center gap-4 text-slate-500 dark:text-slate-500 dark:text-slate-400 text-sm">
           <span className="flex items-center gap-1">
             <Clock size={14} />
             {new Date(record.created_at).toLocaleString()}
@@ -73,18 +73,18 @@ export default function IncidentDetail() {
       </div>
 
       {/* DESCRIPTION */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-2">
-        <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Description</h3>
-        <p className="text-slate-900 dark:text-white leading-relaxed">{record.description}</p>
+      <div className="bg-white dark:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-2">
+        <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-500 dark:text-slate-400">Description</h3>
+        <p className="text-slate-900 dark:text-slate-900 dark:text-white leading-relaxed">{record.description}</p>
       </div>
 
       {/* LOCATION */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
+      <div className="bg-white dark:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
         <div className="flex items-center gap-2 text-blue-500 dark:text-blue-400">
           <MapPin size={18} />
           <h3 className="text-sm font-black uppercase tracking-widest">Location</h3>
         </div>
-        <p className="text-slate-900 dark:text-white font-mono text-sm">{record.latitude}, {record.longitude}</p>
+        <p className="text-slate-900 dark:text-slate-900 dark:text-white font-mono text-sm">{record.latitude}, {record.longitude}</p>
         <div className="h-48 rounded-xl overflow-hidden">
           <MapContainer
             center={[record.latitude, record.longitude]}
@@ -99,8 +99,8 @@ export default function IncidentDetail() {
       </div>
 
       {/* TIMELINE */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Timeline</h3>
+      <div className="bg-white dark:bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
+        <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-500 dark:text-slate-400">Timeline</h3>
         <div className="space-y-0">
           {TIMELINE.map((step, index) => {
             const isCompleted = index <= currentIndex;
@@ -114,7 +114,7 @@ export default function IncidentDetail() {
                       : 'bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-600'
                   }`}>
                     {isCompleted && (
-                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-slate-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
@@ -124,10 +124,10 @@ export default function IncidentDetail() {
                   )}
                 </div>
                 <div className="pb-2 pt-1">
-                  <p className={`font-bold text-sm ${isCompleted ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}>
+                  <p className={`font-bold text-sm ${isCompleted ? 'text-slate-900 dark:text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 dark:text-slate-500'}`}>
                     {step.label}
                   </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
                     {isCompleted ? new Date(record.created_at).toLocaleString() : 'Pending'}
                   </p>
                 </div>

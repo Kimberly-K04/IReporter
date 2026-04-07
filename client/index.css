@@ -10,7 +10,9 @@
 }
 
 :root {
-  background-color: #020c1b;
-  color: white;
   font-family: var(--font-sans);
+}
+
+.dark {
+  color-scheme: dark;
 }

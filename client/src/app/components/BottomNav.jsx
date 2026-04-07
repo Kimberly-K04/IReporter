@@ -5,7 +5,7 @@ export default function BottomNav() {
     isActive ? "text-blue-400" : "text-gray-400";
 
   return (
-    <div className="flex justify-around p-3 bg-slate-800">
+    <div className="flex justify-around p-3 bg-white dark:bg-slate-800">
       <NavLink to="/home" className={link}>Map</NavLink>
       <NavLink to="/home/activity" className={link}>Activity</NavLink>
       <NavLink to="/home/admin" className={link}>Admin</NavLink>
