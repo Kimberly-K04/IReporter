@@ -13,12 +13,12 @@ class SignupResource(Resource):
         password = data.get('password')
 
         if not username or not email or not password:
-            return {'error': 'Username, email, and password are required'}, 400
+            return {'message': 'Username, email, and password are required'}, 400
 
         if User.query.filter_by(username=username).first():
-            return {'error': 'Username already exists'}, 400
+            return {'message': 'Username already exists'}, 400
         if User.query.filter_by(email=email).first():
-            return {'error': 'Email already exists'}, 400
+            return {'message': 'Email already exists'}, 400
 
         user = User(username=username, email=email, password=password)
         db.session.add(user)
@@ -34,7 +34,7 @@ class LoginResource(Resource):
         password = data.get('password')
         user = User.query.filter_by(email=email).first()
         if not user or not user.authenticate(password):
-            return {'error': 'Invalid credentials'}, 401
+            return {'message': 'Invalid credentials'}, 401
         token = create_token(user.id)
         return {'token': token, 'user': user.to_dict()}, 200
 
