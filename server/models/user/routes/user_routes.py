@@ -29,15 +29,19 @@ class SignupResource(Resource):
 
 class LoginResource(Resource):
     def post(self):
-        data = request.get_json()
-        email = data.get('email', '').strip().lower()
-        password = data.get('password')
-        user = User.query.filter_by(email=email).first()
-        if not user or not user.authenticate(password):
-            return {'error': 'Invalid credentials'}, 401
-        token = create_token(user.id)
-        return {'token': token, 'user': user.to_dict()}, 200
-
+        try:
+            data = request.get_json()
+            email = data.get('email', '').strip().lower()
+            password = data.get('password')
+            user = User.query.filter_by(email=email).first()
+            if not user or not user.authenticate(password):
+                return {'error': 'Invalid credentials'}, 401
+            token = create_token(user.id)
+            return {'token': token, 'user': user.to_dict()}, 200
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return {'error': str(e), 'trace': traceback.format_exc()}, 500
 class LogoutResource(Resource):
     @login_required
     def post(self):
