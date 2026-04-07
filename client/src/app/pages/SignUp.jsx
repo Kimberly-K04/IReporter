@@ -45,7 +45,7 @@ export default function SignUp() {
         localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/home");
       } else {
-        setServerError(data.message || "Registration failed.");
+        setServerError(data.error||data.message || "Registration failed.");
       }
     } catch {
       setServerError("Backend offline. Please try again later.");
