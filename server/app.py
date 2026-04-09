@@ -15,7 +15,7 @@ def create_app(test_config=None):
     config_app(app)
     CORS(app, origins=[
             "http://localhost:5173", #dev
-            "https://i-reporter-omega.vercel.app" #prod 
+            "https://ireporter-xi.vercel.app" #prod 
         ],
         supports_credentials=True
         )
