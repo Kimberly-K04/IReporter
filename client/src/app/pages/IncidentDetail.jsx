@@ -6,8 +6,6 @@ import 'leaflet/dist/leaflet.css';
 import { ArrowLeft, Clock, User, MapPin, Pencil, Trash2, Save, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
-console.log("API URL:", API);
-console.log("Fetching:", `${API}/records/${id}`);
 
 const TIMELINE = [
   { key: 'red-flag', label: 'Red-Flag Reported' },
@@ -29,31 +27,30 @@ export default function IncidentDetail() {
   const [editData, setEditData] = useState({ title: '', description: '' });
   const [deleting, setDeleting] = useState(false);
 
-  uuseEffect(() => {
-  const token = localStorage.getItem("token");
-
-  fetch(`${API}/records/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then(res => {
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      return res.json();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`${API}/records/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .then(data => {
-      setRecord(data.record || data);
-      setLoading(false);
-    })
-    .catch(async () => {
-      try {
-        const m = await import('../../data/records.json');
-        const found = m.default.records.find(r => r.id === Number(id));
-        setRecord(found || null);
-      } catch {
-        setRecord(null);
-      }
-      setLoading(false);
-    });
-}, [id]);
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        setRecord(data.record || data);
+        setLoading(false);
+      })
+      .catch(async () => {
+        try {
+          const m = await import('../../data/records.json');
+          const found = m.default.records.find(r => r.id === Number(id));
+          setRecord(found || null);
+        } catch {
+          setRecord(null);
+        }
+        setLoading(false);
+      });
+  }, [id]);
 
   if (loading) return (
     <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">
@@ -131,7 +128,6 @@ export default function IncidentDetail() {
         )}
       </div>
 
-      {/* HERO IMAGE */}
       {record.images?.[0]?.image_url && (
         <div className="relative rounded-3xl overflow-hidden h-64">
           <img src={record.images[0].image_url} alt={record.title} className="w-full h-full object-cover" />
@@ -148,7 +144,6 @@ export default function IncidentDetail() {
         </div>
       )}
 
-      {/* TITLE + META */}
       <div className="space-y-2">
         {editing ? (
           <input
@@ -171,7 +166,6 @@ export default function IncidentDetail() {
         </div>
       </div>
 
-      {/* DESCRIPTION */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-2">
         <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Description</h3>
         {editing ? (
@@ -185,7 +179,6 @@ export default function IncidentDetail() {
         )}
       </div>
 
-      {/* LOCATION */}
       {record.latitude && record.longitude && (
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
           <div className="flex items-center gap-2 text-blue-500 dark:text-blue-400">
@@ -202,7 +195,6 @@ export default function IncidentDetail() {
         </div>
       )}
 
-      {/* MEDIA */}
       {(record.images?.length > 0 || record.videos?.length > 0) && (
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
           <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Media</h3>
@@ -218,15 +210,10 @@ export default function IncidentDetail() {
                           method: "DELETE",
                           headers: { Authorization: `Bearer ${token}` },
                         });
-                        setRecord({
-                          ...record,
-                          images: record.images.filter(i => i.id !== img.id)
-                        });
+                        setRecord({ ...record, images: record.images.filter(i => i.id !== img.id) });
                       }}
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                      ×
-                    </button>
+                    >×</button>
                   )}
                 </div>
               ))}
@@ -242,22 +229,16 @@ export default function IncidentDetail() {
                       method: "DELETE",
                       headers: { Authorization: `Bearer ${token}` },
                     });
-                    setRecord({
-                      ...record,
-                      videos: record.videos.filter(v => v.id !== vid.id)
-                    });
+                    setRecord({ ...record, videos: record.videos.filter(v => v.id !== vid.id) });
                   }}
                   className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold"
-                >
-                  Delete Video
-                </button>
+                >Delete Video</button>
               )}
             </div>
           ))}
         </div>
       )}
 
-      {/* TIMELINE */}
       <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
         <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Timeline</h3>
         <div className="space-y-0">
