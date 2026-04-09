@@ -28,16 +28,33 @@ export default function IncidentDetail() {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    fetch(`${API}/records/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+  const token = localStorage.getItem("token");
+
+  fetch(`${API}/records/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then(res => {
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      return res.json();
     })
-      .then(res => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then(data => { setRecord(data); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [id]);
+    .then(data => {
+      
+      setRecord(data.record || data);
+      setLoading(false);
+    })
+    .catch(async (err) => {
+      console.error("Failed to fetch record:", err);
+      
+      try {
+        const m = await import('../../data/records.json');
+        const found = m.default.records.find(r => r.id === Number(id));
+        setRecord(found || null);
+      } catch {
+        setRecord(null);
+      }
+      setLoading(false);
+    });
+}, [id]);
 
   if (loading) return (
     <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">
