@@ -6,6 +6,8 @@ import 'leaflet/dist/leaflet.css';
 import { ArrowLeft, Clock, User, MapPin, Pencil, Trash2, Save, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
+console.log("API URL:", API);
+console.log("Fetching:", `${API}/records/${id}`);
 
 const TIMELINE = [
   { key: 'red-flag', label: 'Red-Flag Reported' },
@@ -27,7 +29,7 @@ export default function IncidentDetail() {
   const [editData, setEditData] = useState({ title: '', description: '' });
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
+  uuseEffect(() => {
   const token = localStorage.getItem("token");
 
   fetch(`${API}/records/${id}`, {
@@ -38,13 +40,10 @@ export default function IncidentDetail() {
       return res.json();
     })
     .then(data => {
-      
       setRecord(data.record || data);
       setLoading(false);
     })
-    .catch(async (err) => {
-      console.error("Failed to fetch record:", err);
-      
+    .catch(async () => {
       try {
         const m = await import('../../data/records.json');
         const found = m.default.records.find(r => r.id === Number(id));
