@@ -10,7 +10,7 @@ def app():
     app = create_app()
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SECRET_KEY'] = 'test-secret-key'  
+    app.config['SECRET_KEY'] = 'test_super_long_flask_secret_key_123456'  
     return app
 
 @pytest.fixture
