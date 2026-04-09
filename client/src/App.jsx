@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RecordsProvider } from './app/context/RecordsContext';
 import Layout from './app/components/Layout';
 import Login from './app/pages/Login';
@@ -10,6 +10,9 @@ import AdminDashboard from './app/pages/AdminDashboard';
 import ReportSubmission from './app/pages/ReportSubmission';
 import Settings from './app/pages/Settings';
 import IncidentDetail from './app/pages/IncidentDetail';
+import { useEffect } from 'react';
+
+const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
@@ -19,9 +22,32 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   return children;
 };
 
+function AuthSync() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "demo-token") return;
+    fetch(`${API}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Invalid token");
+        return res.json();
+      })
+      .then(data => {
+        localStorage.setItem("user", JSON.stringify(data.user || data));
+      })
+      .catch(() => {
+        localStorage.clear();
+        window.location.href = "/login";
+      });
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <AuthSync />
       <RecordsProvider>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
