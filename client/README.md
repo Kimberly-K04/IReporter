@@ -1,16 +1,54 @@
-# React + Vite
+## Frontend Setup
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Prerequisites
+- Node.js 18+
+- npm
 
-Currently, two official plugins are available:
+### Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd client
+npm install
+```
 
-## React Compiler
+### Environment Variables
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Create a `.env` file inside the `client/` folder:
 
-## Expanding the ESLint configuration
+```env
+VITE_API=http://localhost:5000/api/v1
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+> For production, replace with the deployed backend URL e.g. `https://ireporter-api.onrender.com/api/v1`
+
+### Running the Development Server
+
+```bash
+cd client
+npm run dev
+```
+
+App runs at `http://localhost:5173`
+
+### Running Tests
+
+```bash
+cd client
+npm run test
+```
+
+### Building for Production
+
+```bash
+cd client
+npm run build
+```
+
+### Deployment
+
+The frontend is deployed on Vercel. Every push to `main` triggers:
+1. Tests run via GitHub Actions
+2. If tests pass, build runs
+3. If build passes, deploys to Vercel automatically
+
+Live URL: `https://ireporter-kkwamboka04.vercel.app
