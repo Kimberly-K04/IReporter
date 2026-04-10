@@ -4,9 +4,6 @@ import { Camera, Video, Send, AlertCircle, CheckCircle } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 import { api } from "../utils/api";
 
-
-const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
-
 const validate = (formData, location) => {
   const errors = {};
   if (!formData.title.trim()) errors.title = "Title is required";
@@ -30,44 +27,44 @@ export default function ReportSubmission() {
   const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setSubmitError("");
-  const errs = validate(formData, location);
-  setErrors(errs);
-  if (Object.keys(errs).length > 0) return;
-  setLoading(true);
+    e.preventDefault();
+    setSubmitError("");
+    const errs = validate(formData, location);
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+    setLoading(true);
 
-  try {
-    const res = await api.createRecord({
-      title: formData.title,
-      description: formData.description,
-      type: formData.type,
-      latitude: location[0],
-      longitude: location[1],
-    });
+    try {
+      const res = await api.createRecord({
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        latitude: location[0],
+        longitude: location[1],
+      });
 
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.message || "Failed to submit report");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to submit report");
+      }
+
+      const record = await res.json();
+      const record_id = record.id;
+
+      for (const img of images) {
+        await api.uploadImage(record_id, img);
+      }
+
+      if (video) await api.uploadVideo(record_id, video);
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err.message || "Submission failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const record = await res.json();
-    const record_id = record.id;
-
-    for (const img of images) {
-      await api.uploadImage(record_id, img);
-    }
-
-    if (video) await api.uploadVideo(record_id, video);
-
-    setSubmitted(true);
-  } catch (err) {
-    setSubmitError(err.message || "Submission failed. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-     
   const inputClass = (field) =>
     `w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border ${
       errors[field] ? "border-red-500 focus:ring-red-500" : "border-slate-200 dark:border-slate-700 focus:ring-blue-500"
@@ -104,7 +101,6 @@ export default function ReportSubmission() {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-4 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700">
-
           <div className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
             <span>🕒</span>
             <span>Report time: <span className="text-slate-900 dark:text-white font-bold">
@@ -121,9 +117,7 @@ export default function ReportSubmission() {
           </select>
 
           <div>
-            <input
-              placeholder="Short Title"
-              value={formData.title}
+            <input placeholder="Short Title" value={formData.title}
               className={inputClass("title")}
               onChange={e => { setFormData({...formData, title: e.target.value}); setErrors({...errors, title: ""}); }}
             />
@@ -131,9 +125,7 @@ export default function ReportSubmission() {
           </div>
 
           <div>
-            <textarea
-              placeholder="Detailed Description... (min 20 characters)"
-              value={formData.description}
+            <textarea placeholder="Detailed Description... (min 20 characters)" value={formData.description}
               className={`${inputClass("description")} h-40`}
               onChange={e => { setFormData({...formData, description: e.target.value}); setErrors({...errors, description: ""}); }}
             />
@@ -170,11 +162,8 @@ export default function ReportSubmission() {
               📍 {location[0].toFixed(5)}, {location[1].toFixed(5)}
             </p>
           )}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all"
-          >
+          <button onClick={handleSubmit} disabled={loading}
+            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all">
             <Send size={20}/>
             {loading ? "Submitting..." : "SUBMIT TO AUTHORITIES"}
           </button>

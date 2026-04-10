@@ -108,7 +108,11 @@ def seed_all():
     """Main seeding function."""
     app = create_app()
     with app.app_context():
-        db.drop_all()   # Optional: clean DB before seeding (remove if you want to keep existing)
+        # db.drop_all() 
+        from sqlalchemy import text
+        with db.engine.connect() as conn:
+            conn.execute(text("DROP SCHEMA public CASCADE; CREATE SCHEMA public;"))
+            conn.commit()
         db.create_all()
         users = seed_users()
         seed_records(users)

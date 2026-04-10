@@ -4,7 +4,9 @@ from flask_cors import CORS
 from .config import config_app
 from flask_migrate import Migrate
 from  .models import *
-from .routes.create_blueprint import api_pb
+from .routes.create_blueprint import api_pb 
+
+
 
 def create_app(test_config=None):
     app=Flask(__name__)
@@ -13,7 +15,7 @@ def create_app(test_config=None):
     config_app(app)
     CORS(app, origins=[
             "http://localhost:5173", #dev
-            "https://i-reporter-inky.vercel.app" #prod 
+            "https://ireporter-xi.vercel.app" #prod 
         ],
         supports_credentials=True
         )
