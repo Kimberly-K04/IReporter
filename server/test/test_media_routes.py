@@ -8,9 +8,12 @@ from ..test.test_user_specific_routes import create_user
 
 @pytest.fixture(scope="module")
 def app():
-    app = create_app()
-    app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+    test_config = {
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
+        'SECRET_KEY': 'test-secret'
+    }
+    app = create_app(test_config)
     return app
 
 @pytest.fixture
