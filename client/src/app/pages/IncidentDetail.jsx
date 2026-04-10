@@ -4,8 +4,8 @@ import { useRecords } from '../context/RecordsContext';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ArrowLeft, Clock, User, MapPin, Pencil, Trash2, Save, X } from 'lucide-react';
+import { api } from "../utils/api";
 
-const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
 
 const TIMELINE = [
   { key: 'red-flag', label: 'Red-Flag Reported' },
@@ -28,29 +28,26 @@ export default function IncidentDetail() {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${API}/records/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+  api.getRecord(id)
+    .then(res => {
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      return res.json();
     })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        return res.json();
-      })
-      .then(data => {
-        setRecord(data.record || data);
-        setLoading(false);
-      })
-      .catch(async () => {
-        try {
-          const m = await import('../../data/records.json');
-          const found = m.default.records.find(r => r.id === Number(id));
-          setRecord(found || null);
-        } catch {
-          setRecord(null);
-        }
-        setLoading(false);
-      });
-  }, [id]);
+    .then(data => {
+      setRecord(data.record || data);
+      setLoading(false);
+    })
+    .catch(async () => {
+      try {
+        const m = await import('../../data/records.json');
+        const found = m.default.records.find(r => r.id === Number(id));
+        setRecord(found || null);
+      } catch {
+        setRecord(null);
+      }
+      setLoading(false);
+    });
+}, [id]);
 
   if (loading) return (
     <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">
@@ -206,12 +203,9 @@ export default function IncidentDetail() {
                   {canEdit && (
                     <button
                       onClick={async () => {
-                        await fetch(`${API}/images/${img.id}`, {
-                          method: "DELETE",
-                          headers: { Authorization: `Bearer ${token}` },
-                        });
-                        setRecord({ ...record, images: record.images.filter(i => i.id !== img.id) });
-                      }}
+                      await api.deleteImage(img.id);
+                      setRecord({ ...record, images: record.images.filter(i => i.id !== img.id) });
+                    }}
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
                     >×</button>
                   )}
@@ -225,10 +219,7 @@ export default function IncidentDetail() {
               {canEdit && (
                 <button
                   onClick={async () => {
-                    await fetch(`${API}/videos/${vid.id}`, {
-                      method: "DELETE",
-                      headers: { Authorization: `Bearer ${token}` },
-                    });
+                    await api.deleteVideo(vid.id);
                     setRecord({ ...record, videos: record.videos.filter(v => v.id !== vid.id) });
                   }}
                   className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold"
