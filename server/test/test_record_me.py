@@ -6,10 +6,12 @@ from server.utils.auth import create_token
 
 @pytest.fixture(scope='session')
 def app():
-    app = create_app()
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SECRET_KEY'] = 'test_super_long_flask_secret_key_123456'  
+    test_config = {
+        'TESTING': True,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
+        'SECRET_KEY': 'test-secret'
+    }
+    app = create_app(test_config)
     return app
 
 @pytest.fixture
