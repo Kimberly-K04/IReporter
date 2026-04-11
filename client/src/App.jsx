@@ -11,8 +11,7 @@ import ReportSubmission from './app/pages/ReportSubmission';
 import Settings from './app/pages/Settings';
 import IncidentDetail from './app/pages/IncidentDetail';
 import { useEffect } from 'react';
-
-const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
+import { api } from "./app/utils/api";
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
@@ -26,9 +25,7 @@ function AuthSync() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token || token === "demo-token") return;
-    fetch(`${API}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    api.me()
       .then(res => {
         if (!res.ok) throw new Error("Invalid token");
         return res.json();

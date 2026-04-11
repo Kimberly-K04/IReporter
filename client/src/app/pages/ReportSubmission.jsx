@@ -2,8 +2,7 @@ import { useState } from 'react';
 import Map from '../components/Map';
 import { Camera, Video, Send, AlertCircle, CheckCircle } from 'lucide-react';
 import { useLocation } from "react-router-dom";
-
-const API = import.meta.env.VITE_API || "http://localhost:5000/api/v1";
+import { api } from "../utils/api";
 
 const validate = (formData, location) => {
   const errors = {};
@@ -17,7 +16,7 @@ const validate = (formData, location) => {
 
 export default function ReportSubmission() {
   const routerState = useLocation();
-  const [formData, setFormData] = useState({ title: '', description: '', type: 'red flag' });
+  const [formData, setFormData] = useState({ title: '', description: '', type: 'red-flag' });
   const [location, setLocation] = useState(routerState.state?.location || null);
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState(null);
@@ -36,23 +35,12 @@ export default function ReportSubmission() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-
-      // 1. create record
-      const res = await fetch(`${API}/records/create`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          type: formData.type,
-          latitude: location[0],
-          longitude: location[1],
-        }),
+      const res = await api.createRecord({
+        title: formData.title,
+        description: formData.description,
+        type: formData.type,
+        latitude: location[0],
+        longitude: location[1],
       });
 
       if (!res.ok) {
@@ -63,29 +51,11 @@ export default function ReportSubmission() {
       const record = await res.json();
       const record_id = record.id;
 
-      // 2. upload images
       for (const img of images) {
-        const form = new FormData();
-        form.append("record_id", record_id);
-        form.append("image", img);
-        await fetch(`${API}/images`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: form,
-        });
+        await api.uploadImage(record_id, img);
       }
 
-      // 3. upload video
-      if (video) {
-        const form = new FormData();
-        form.append("record_id", record_id);
-        form.append("video", video);
-        await fetch(`${API}/videos`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: form,
-        });
-      }
+      if (video) await api.uploadVideo(record_id, video);
 
       setSubmitted(true);
     } catch (err) {
@@ -131,7 +101,6 @@ export default function ReportSubmission() {
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-4 bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700">
-
           <div className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 text-xs">
             <span>🕒</span>
             <span>Report time: <span className="text-slate-900 dark:text-white font-bold">
@@ -143,14 +112,12 @@ export default function ReportSubmission() {
             className="w-full p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             onChange={e => setFormData({...formData, type: e.target.value})}
           >
-            <option value="red flag">🚩 Red-Flag (Corruption)</option>
+            <option value="red-flag">🚩 Red-Flag (Corruption)</option>
             <option value="intervention">🛠️ Intervention (Infrastructure)</option>
           </select>
 
           <div>
-            <input
-              placeholder="Short Title"
-              value={formData.title}
+            <input placeholder="Short Title" value={formData.title}
               className={inputClass("title")}
               onChange={e => { setFormData({...formData, title: e.target.value}); setErrors({...errors, title: ""}); }}
             />
@@ -158,9 +125,7 @@ export default function ReportSubmission() {
           </div>
 
           <div>
-            <textarea
-              placeholder="Detailed Description... (min 20 characters)"
-              value={formData.description}
+            <textarea placeholder="Detailed Description... (min 20 characters)" value={formData.description}
               className={`${inputClass("description")} h-40`}
               onChange={e => { setFormData({...formData, description: e.target.value}); setErrors({...errors, description: ""}); }}
             />
@@ -197,11 +162,8 @@ export default function ReportSubmission() {
               📍 {location[0].toFixed(5)}, {location[1].toFixed(5)}
             </p>
           )}
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all"
-          >
+          <button onClick={handleSubmit} disabled={loading}
+            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 transition-all">
             <Send size={20}/>
             {loading ? "Submitting..." : "SUBMIT TO AUTHORITIES"}
           </button>
