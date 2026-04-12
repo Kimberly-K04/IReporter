@@ -7,7 +7,7 @@ from ....config import db
 import jwt
 from datetime import datetime, timedelta
 from ....services.email_service import send_password_reset_code_email
-
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 class SignupResource(Resource):
     def post(self):
@@ -25,8 +25,16 @@ class SignupResource(Resource):
             return {'message': 'Email already exists'}, 400
 
         user = User(username=username, email=email, password=password)
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except OperationalError:
+            return {'message': 'Database is currently unavailable'}
+        except ProgrammingError:
+            return {'message': 'Your request can not be handled at this time'}
+        except Exception as e:
+            print(f'An unexpected error occurred: {e}')
+        
 
         token = create_token(user.id)
         return {'token': token, 'user': user.to_dict()}, 201
