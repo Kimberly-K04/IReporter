@@ -7,12 +7,13 @@ import { ArrowLeft, Clock, User, MapPin, Pencil, Trash2, Save, X } from 'lucide-
 import { api } from "../utils/api";
 
 
+const STATUS_ORDER = ['pending', 'under investigation', 'resolved'];
+
 const TIMELINE = [
-  { key: 'red-flag', label: 'Red-Flag Reported' },
-  { key: 'investigating', label: 'Under Investigation' },
+  { key: 'pending', label: 'Report Submitted' },
+  { key: 'under investigation', label: 'Under Investigation' },
   { key: 'resolved', label: 'Resolved' },
 ];
-const STATUS_ORDER = ['red-flag', 'investigating', 'resolved'];
 
 export default function IncidentDetail() {
   const { id } = useParams();
@@ -28,26 +29,21 @@ export default function IncidentDetail() {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-  api.getRecord(id)
-    .then(res => {
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      setRecord(data.record || data);
-      setLoading(false);
-    })
-    .catch(async () => {
-      try {
-        const m = await import('../../data/records.json');
-        const found = m.default.records.find(r => r.id === Number(id));
-        setRecord(found || null);
-      } catch {
+    api.getRecord(id)
+      .then(res => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        setRecord(data.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch record:", err);
         setRecord(null);
-      }
-      setLoading(false);
-    });
-}, [id]);
+        setLoading(false);
+      });
+  }, [id]);
 
   if (loading) return (
     <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">

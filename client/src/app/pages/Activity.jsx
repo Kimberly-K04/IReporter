@@ -4,7 +4,7 @@ import { useRecords } from "../context/RecordsContext";
 import imagesData from "../../data/images.json";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PER_PAGE = 5;
+const PER_PAGE = 7;
 
 export default function Activity() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function Activity() {
       status: record.status,
       type: record.type,
       timestamp: new Date(record.created_at).toLocaleString(),
-      location: `${record.latitude}, ${record.longitude}`,
+      location:record.latitude && record.longitude ? `${record.latitude}, ${record.longitude}`: "No location provided",
       thumbnail: image?.image_url || "https://via.placeholder.com/400",
     };
   });
@@ -54,12 +54,14 @@ export default function Activity() {
               <div className="flex justify-between items-start">
                 <h3 className="font-bold text-slate-900 dark:text-white">{incident.title}</h3>
                 <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase flex-shrink-0 ${
-                  incident.status === "red-flag"
+                  incident.status === "pending" || incident.status === "red flag"
                     ? "bg-red-500/10 text-red-500 dark:text-red-400"
-                    : incident.status === "investigating"
+                    : incident.status === "under investigation"
                     ? "bg-orange-500/10 text-orange-500 dark:text-orange-400"
+                    : incident.status === "rejected"
+                    ? "bg-red-500/10 text-red-500 dark:text-red-400"
                     : "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400"
-                }`}>
+                  }`}>
                   {incident.status}
                 </span>
               </div>

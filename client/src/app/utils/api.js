@@ -33,8 +33,11 @@ export const api = {
     }),
 
   // RECORDS
-  getRecords: () =>
-    fetch(`${BASE}/records`, { headers: headers() }),
+  getRecords: () =>{
+    console.log("Fetching from:", `${BASE}/records`);
+    return fetch(`${BASE}/records`, { headers: headers() })
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(data => data.data)},
 
   getRecord: (id) =>
     fetch(`${BASE}/records/${id}`, { headers: headers() }),
