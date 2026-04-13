@@ -16,11 +16,11 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
 
-  register: (username, email, password) =>
+  register: (username, email, password,phone_number) =>
     fetch(`${BASE}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, password, phone_number }),
     }),
 
   me: () =>
