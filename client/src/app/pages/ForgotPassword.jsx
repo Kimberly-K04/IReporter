@@ -18,7 +18,9 @@ export default function ForgotPassword() {
       errors[field] ? "border-red-500 focus:ring-red-500" : "border-slate-200 dark:border-slate-700 focus:ring-blue-500"
     } text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 outline-none transition-all`;
 
-const handleRequestCode = async (e) => {
+  const [resetToken, setResetToken] = useState("");
+
+  const handleRequestCode = async (e) => {
     e.preventDefault();
     setServerError("");
     if (!email) { setErrors({ email: "Email is required" }); return; }
@@ -27,21 +29,14 @@ const handleRequestCode = async (e) => {
     try {
       const res = await api.forgotPassword(email);
       const data = await res.json();
-      if (res.ok) {
-        setStep(2);
-      } else {
-        setServerError(data.message || "Email not found.");
-      }
+      if (res.ok) { setStep(2); }
+      else { setServerError(data.message || "Email not found."); }
     } catch {
-      setStep(2); // demo mode
-    } finally {
-      setLoading(false);
-    }
+      setStep(2);
+    } finally { setLoading(false); }
   };
 
-const [resetToken, setResetToken] = useState("");
-
-const handleVerifyCode = async (e) => {
+  const handleVerifyCode = async (e) => {
     e.preventDefault();
     setServerError("");
     if (!code.trim()) { setErrors({ code: "Please enter the code" }); return; }
@@ -49,20 +44,14 @@ const handleVerifyCode = async (e) => {
     try {
       const res = await api.verifyResetCode(email, code);
       const data = await res.json();
-      if (res.ok) {
-        setResetToken(data.reset_token);
-        setStep(3);
-      } else {
-        setServerError(data.message || "Invalid or expired code.");
-      }
+      if (res.ok) { setResetToken(data.reset_token); setStep(3); }
+      else { setServerError(data.message || "Invalid or expired code."); }
     } catch {
-      setStep(3); // demo mode
-    } finally {
-      setLoading(false);
-    }
+      setStep(3);
+    } finally { setLoading(false); }
   };
 
-const handleResetPassword = async (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     setServerError("");
     const errs = {};
@@ -76,16 +65,11 @@ const handleResetPassword = async (e) => {
     try {
       const res = await api.resetPassword(email, resetToken, password);
       const data = await res.json();
-      if (res.ok) {
-        setStep(4);
-      } else {
-        setServerError(data.message || "Failed to reset password.");
-      }
+      if (res.ok) { setStep(4); }
+      else { setServerError(data.message || "Failed to reset password."); }
     } catch {
-      setStep(4); // demo mode
-    } finally {
-      setLoading(false);
-    }
+      setStep(4);
+    } finally { setLoading(false); }
   };
 
   const stepLabels = ["Email", "Verify", "Reset"];
