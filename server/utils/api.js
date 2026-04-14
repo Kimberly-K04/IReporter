@@ -31,27 +31,6 @@ export const api = {
       headers: authHeaders(),
     }),
 
-  forgotPassword: (email) =>
-    fetch(`${BASE}/auth/forgot-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    }),
-
-  verifyResetCode: (email, code) =>
-    fetch(`${BASE}/auth/verify-reset-code`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code }),
-    }),
-
-  resetPassword: (email, reset_token, password) =>
-    fetch(`${BASE}/auth/reset-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, reset_token, password }),
-    }),
-
   getRecords: () =>
     fetch(`${BASE}/records`, { headers: authHeaders() }),
 
@@ -59,7 +38,7 @@ export const api = {
     fetch(`${BASE}/records/${id}`, { headers: authHeaders() }),
 
   createRecord: (body) =>
-    fetch(`${BASE}/records/create`, {
+    fetch(`${BASE}/records`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(body),
@@ -89,7 +68,7 @@ export const api = {
     const form = new FormData();
     form.append("record_id", record_id);
     form.append("image", imageFile);
-    return fetch(`${BASE}/images/upload`, {
+    return fetch(`${BASE}/images`, {
       method: "POST",
       headers: authHeaders(true),
       body: form,
@@ -106,7 +85,7 @@ export const api = {
     const form = new FormData();
     form.append("record_id", record_id);
     form.append("video", videoFile);
-    return fetch(`${BASE}/videos/upload`, {
+    return fetch(`${BASE}/videos`, {
       method: "POST",
       headers: authHeaders(true),
       body: form,

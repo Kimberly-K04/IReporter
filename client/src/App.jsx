@@ -4,6 +4,7 @@ import Layout from './app/components/Layout';
 import Login from './app/pages/Login';
 import ForgotPassword from './app/pages/ForgotPassword';
 import SignUp from './app/pages/SignUp';
+import LiveMap from './app/pages/LiveMap';
 import Home from './app/pages/Home';
 import Activity from './app/pages/Activity';
 import AdminDashboard from './app/pages/AdminDashboard';
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="map" element={<LiveMap />} />
             <Route path="report" element={<ReportSubmission />} />
             <Route path="activity" element={<Activity />} />
             <Route path="incident/:id" element={<IncidentDetail />} />

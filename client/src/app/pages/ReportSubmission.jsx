@@ -39,30 +39,26 @@ export default function ReportSubmission() {
 
     try {
       const res = await api.createRecord({
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        latitude: location[0],
-        longitude: location[1],
-      });
+      title: formData.title,
+      description: formData.description,
+      type: formData.type,
+      latitude: location[0],
+      longitude: location[1],
+    });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to submit report");
-      }
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message || "Failed to submit report");
+    }
 
-      const record = await res.json();
-      const newRecord=record.data
-      addRecord(newRecord)
-      const record_id = record.data.id;
+    const json = await res.json();
+    const record_id = json.data?.id || json.id; 
 
-      for (const img of images) {
-        await api.uploadImage(record_id, img);
-      }
-
-      if (video) await api.uploadVideo(record_id, video);
-
-      setSubmitted(true);
+    for (const img of images) {
+      await api.uploadImage(record_id, img);
+    }
+    if (video) await api.uploadVideo(record_id, video);
+    setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message || "Submission failed. Please try again.");
     } finally {

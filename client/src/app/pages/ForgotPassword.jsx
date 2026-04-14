@@ -18,6 +18,8 @@ export default function ForgotPassword() {
       errors[field] ? "border-red-500 focus:ring-red-500" : "border-slate-200 dark:border-slate-700 focus:ring-blue-500"
     } text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 outline-none transition-all`;
 
+  const [resetToken, setResetToken] = useState("");
+
   const handleRequestCode = async (e) => {
     e.preventDefault();
     setServerError("");
@@ -25,49 +27,28 @@ export default function ForgotPassword() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErrors({ email: "Enter a valid email" }); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const res = await api.forgotPassword(email);
       const data = await res.json();
-      if (res.ok) {
-        setStep(2);
-      } else {
-        setServerError(data.message || "Email not found.");
-      }
+      if (res.ok) { setStep(2); }
+      else { setServerError(data.message || "Email not found."); }
     } catch {
-      // demo mode
       setStep(2);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     setServerError("");
     if (!code.trim()) { setErrors({ code: "Please enter the code" }); return; }
-    if (code.trim().length < 4) { setErrors({ code: "Invalid code" }); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/verify-reset-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code }),
-      });
+      const res = await api.verifyResetCode(email, code);
       const data = await res.json();
-      if (res.ok) {
-        setStep(3);
-      } else {
-        setServerError(data.message || "Invalid or expired code.");
-      }
+      if (res.ok) { setResetToken(data.reset_token); setStep(3); }
+      else { setServerError(data.message || "Invalid or expired code."); }
     } catch {
-      
       setStep(3);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleResetPassword = async (e) => {
@@ -82,23 +63,13 @@ export default function ForgotPassword() {
     if (Object.keys(errs).length > 0) return;
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code, password }),
-      });
+      const res = await api.resetPassword(email, resetToken, password);
       const data = await res.json();
-      if (res.ok) {
-        setStep(4);
-      } else {
-        setServerError(data.message || "Failed to reset password.");
-      }
+      if (res.ok) { setStep(4); }
+      else { setServerError(data.message || "Failed to reset password."); }
     } catch {
-      // demo mode
       setStep(4);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const stepLabels = ["Email", "Verify", "Reset"];
@@ -109,7 +80,7 @@ export default function ForgotPassword() {
 
         {/* HEADER */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-2xl font-black text-2xl mb-4">iR</div>
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-2xl font-black text-2xl mb-4">IR</div>
           <h1 className="text-4xl font-black tracking-tight">IReporter</h1>
           <p className="text-slate-400 mt-2">Reset your password</p>
         </div>
