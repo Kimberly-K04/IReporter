@@ -34,8 +34,8 @@ export const api = {
 
   // RECORDS
   getRecords: () =>{
-    console.log("Fetching from:", `${BASE}/records`);
-    return fetch(`${BASE}/records`, { headers: headers() })
+    console.log("Fetching from:", `${BASE}/records?per_page=100`);
+    return fetch(`${BASE}/records?per_page=100`, { headers: headers() })
     .then(res => res.ok ? res.json() : Promise.reject())
     .then(data => data.data)},
 

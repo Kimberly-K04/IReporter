@@ -44,9 +44,17 @@ export function RecordsProvider({ children }) {
   const addRecord = (newRecord) => {
     setRecords(prev => [newRecord, ...prev]);
   };
+  const refreshRecords = () => {
+  api.getRecords()
+    .then(recordsList => {
+      setRecords(Array.isArray(recordsList) ? recordsList : []);
+      setLoading(false);
+    })
+    .catch(err => console.error("Failed to refresh records:", err));  
+  };
 
   return (
-    <RecordsContext.Provider value={{ records, loading, updateStatus, deleteRecord, editRecord, addRecord }}>
+    <RecordsContext.Provider value={{ records, loading, updateStatus, deleteRecord, editRecord, addRecord,refreshRecords }}>
       {children}
     </RecordsContext.Provider>
   );

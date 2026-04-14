@@ -61,6 +61,7 @@ class RecordCreateResource(Resource):
             return make_response({'data':record.to_dict()},201)
         except Exception as e:
             db.session.rollback()
+            print(f"Record creation error: {e}")
             return {'message':str(e)},400
 
 class AdminRecordResource(Resource):

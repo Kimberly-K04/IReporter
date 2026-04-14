@@ -11,7 +11,7 @@ class SMSService:
         if self.acc_sid and self.auth_token and self.from_number:
             self.client=Client(self.acc_sid, self.auth_token)
         else:
-            raise Exception('Credentials are not correct or not set ')
+            print('Credentials are not correct or not set ')
         
     def send_sms(self,to_number,message_body):
         
@@ -27,7 +27,7 @@ class SMSService:
         
         #ensure number has a +
         if not to_number.startswith('+'):
-            raise Exception("Number not in international format doesn't start with { + }.")
+            print("Number not in international format doesn't start with { + }.")
         
         try:
             message=self.client.messages.create(
