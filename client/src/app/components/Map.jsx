@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import { forwardRef, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -34,6 +34,17 @@ const getMarkerIcon = (type) => {
   });
 };
 
+// Helper component to fit map to Kenya bounds after loading
+function FitToKenya() {
+  const map = useMap();
+  useEffect(() => {
+    // Kenya bounding box: southwest to northeast
+    const kenyaBounds = L.latLngBounds([-4.7, 33.9], [5.2, 41.9]);
+    map.fitBounds(kenyaBounds);
+  }, [map]);
+  return null;
+}
+
 const Map = forwardRef(({ incidents = [], onSelect, onLocationSelect, selectedLocation }, ref) => {
   const validIncidents = incidents.filter(
     i => i.latitude != null && i.longitude != null && !isNaN(i.latitude) && !isNaN(i.longitude)
@@ -47,13 +58,14 @@ const Map = forwardRef(({ incidents = [], onSelect, onLocationSelect, selectedLo
 
   return (
     <MapContainer
-      center={[-1.286389, 36.817223]}
-      zoom={13}
+      center={[-1.286389, 36.817223]} // fallback center, will be overridden by FitToKenya
+      zoom={6}                        // fallback zoom
       className="h-full w-full"
       ref={ref}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <LocationPicker onLocationSelect={onLocationSelect} />
+      <FitToKenya />  {/* 👈 this ensures the map shows all of Kenya on load */}
       {isValidSelected && (
         <Marker position={selectedLocation} icon={pinIcon}>
           <Popup>📍 Incident location pinned</Popup>

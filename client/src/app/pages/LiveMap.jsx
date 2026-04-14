@@ -14,6 +14,12 @@ export default function LiveMap() {
   const [selected, setSelected] = useState(null);
   const [pinnedLocation, setPinnedLocation] = useState(null);
   const [pinMode, setPinMode] = useState(false);
+  const [toast, setToast] = useState({ message: "", type: "", visible: false });
+
+  const showToast = (message, type = "error") => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 4000);
+  };
 
   // Wait for map instance to be ready
   useEffect(() => {
@@ -46,7 +52,7 @@ export default function LiveMap() {
     if (!placeQuery.trim()) return;
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeQuery)}&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeQuery)}&limit=1&countrycodes=ke`
       );
       const data = await res.json();
       if (data.length > 0) {
@@ -57,11 +63,11 @@ export default function LiveMap() {
           console.warn("Map not ready");
         }
       } else {
-        alert("Place not found");
+        showToast("Location not found in Kenya. Please try a place within Kenya.", "warning");
       }
     } catch (err) {
       console.error(err);
-      alert("Search failed");
+      showToast("Search failed. Please try again.", "error");
     }
   };
 
@@ -76,15 +82,14 @@ export default function LiveMap() {
           .openPopup();
       })
       .on("locationerror", () => {
-        alert("Location access denied or unavailable.");
+        showToast("Location access denied or unavailable.", "error");
       });
   };
 
   return (
     <div className="h-full w-full flex flex-col">
-      {/* Toolbar */}
+      {/* Toolbar (unchanged) */}
       <div className="flex flex-wrap items-center gap-3 p-3 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm z-10">
-        {/* Incident Search */}
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500" size={16} />
           <input
@@ -96,7 +101,6 @@ export default function LiveMap() {
           />
         </div>
 
-        {/* Place Search */}
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -114,7 +118,6 @@ export default function LiveMap() {
           </button>
         </div>
 
-        {/* Locate Me */}
         <button
           onClick={handleLocate}
           className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-blue-500 transition-all"
@@ -123,7 +126,6 @@ export default function LiveMap() {
           <Locate size={18} />
         </button>
 
-        {/* Pin Mode Toggle */}
         <button
           onClick={() => { setPinMode(!pinMode); setPinnedLocation(null); }}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${
@@ -147,7 +149,22 @@ export default function LiveMap() {
           selectedLocation={pinnedLocation}
         />
 
-        {/* Pinned Location Card */}
+        {/* Toast Notification */}
+        {toast.visible && (
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-[2000] transition-all duration-300 ease-in-out">
+            <div className={`px-6 py-3 rounded-xl shadow-lg text-sm font-bold ${
+              toast.type === "error"
+                ? "bg-red-500 text-white"
+                : toast.type === "warning"
+                ? "bg-yellow-500 text-white"
+                : "bg-blue-500 text-white"
+            }`}>
+              {toast.message}
+            </div>
+          </div>
+        )}
+
+        {/* Pinned Location Card (unchanged) */}
         {pinnedLocation && (
           <div className="absolute bottom-4 right-4 z-[1000] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white p-4 rounded-2xl shadow-2xl w-64 space-y-3">
             <div className="flex justify-between items-center">
@@ -168,7 +185,7 @@ export default function LiveMap() {
           </div>
         )}
 
-        {/* Selected Incident Card */}
+        {/* Selected Incident Card (unchanged) */}
         {selected && !pinnedLocation && (
           <div className="absolute bottom-4 left-4 z-[1000] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white p-4 rounded-2xl shadow-2xl w-64 space-y-2">
             <div className="flex justify-between items-center">
