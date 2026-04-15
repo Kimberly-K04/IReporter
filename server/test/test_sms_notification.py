@@ -73,7 +73,7 @@ def test_sms_sent_when_user_has_phone_number(mock_send_sms, client):
     mock_send_sms.assert_called_once()
     args, _ = mock_send_sms.call_args
     assert args[0] == user.phone_number
-    expected_message = f"ℹ️ iReporter: Status of report '{record.title}' changed to 'under investigation'."
+    expected_message = f"ℹ️ IReporter: Status of report '{record.title}' changed to 'under investigation'."
     assert args[1] == expected_message
 
 @patch('server.services.sms_service.sms_service.send_sms')
@@ -130,6 +130,6 @@ def test_sms_correct_message_format(mock_send_sms, client):
 
     mock_send_sms.assert_called_once()
     args, _ = mock_send_sms.call_args
-    expected_message = f"ℹ️ iReporter: Status of report '{record.title}' changed to 'rejected'."
+    expected_message = f"ℹ️ IReporter: Status of report '{record.title}' changed to 'rejected'."
     assert args[0] == user.phone_number
     assert args[1] == expected_message
