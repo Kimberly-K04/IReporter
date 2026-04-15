@@ -37,8 +37,21 @@ export default function LiveMap() {
     );
   });
 
+  const isWithinKenya = (lat, lng) => {
+    const minLat = -4.7;
+    const maxLat = 5.2;
+    const minLng = 33.9;
+    const maxLng = 41.9;
+    return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
+  };
+
   const handleLocationPin = (coords) => {
     if (!pinMode) return;
+    const [lat, lng] = coords;
+    if (!isWithinKenya(lat, lng)) {
+      showToast("Location must be within Kenya. Please click inside Kenya.", "warning");
+      return;
+    }
     setPinnedLocation(coords);
   };
 
